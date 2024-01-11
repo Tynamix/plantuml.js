@@ -1,0 +1,24 @@
+version: "3.1"
+services:
+  plantumljs:
+    build: .
+    labels:
+      traefik.docker.network: proxy
+      traefik.enable: "true"
+      traefik.http.routers.plantumljs-secure.entrypoints: websecure
+      traefik.http.routers.plantumljs-secure.middlewares: default@file
+      traefik.http.routers.plantumljs-secure.rule: Host(`${DOMAIN_NAME}`)
+      traefik.http.routers.plantumljs-secure.service: plantumljs
+      traefik.http.routers.plantumljs-secure.tls: "true"
+      traefik.http.routers.plantumljs-secure.tls.certresolver: http_resolver
+      traefik.http.routers.plantumljs.entrypoints: web
+      traefik.http.routers.plantumljs.rule: Host(`${DOMAIN_NAME}`)
+      traefik.http.services.plantumljs.loadbalancer.server.port: "80"
+    restart: always
+    networks:
+      default: null
+      proxy: null
+networks:
+  default:
+  proxy:
+    external: true
